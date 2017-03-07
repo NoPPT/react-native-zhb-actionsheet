@@ -1,0 +1,19 @@
+{
+  "name": "react-native-zhb-actionsheet",
+  "version": "1.0.0",
+  "description": "react-native actionsSheet for Android and iOS",
+  "main": "ActionSheet.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NoPPT/react-native-actionsheet.git"
+  },
+  "author": "zhuang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NoPPT/react-native-actionsheet/issues"
+  },
+  "homepage": "https://github.com/NoPPT/react-native-actionsheet#readme"
+}
