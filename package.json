@@ -1,8 +1,8 @@
 {
   "name": "react-native-zhb-actionsheet",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "react-native ActionSheet for Android and iOS",
-  "main": "example/src/index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

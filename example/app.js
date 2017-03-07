@@ -7,7 +7,7 @@ import {
     StyleSheet
 } from 'react-native';
 
-import ActionSheet from './src';
+import ActionSheet from 'react-native-zhb-actionsheet';
 
 export default class App extends Component {
 
