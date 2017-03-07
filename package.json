@@ -1,7 +1,7 @@
 {
   "name": "react-native-zhb-actionsheet",
-  "version": "1.0.1",
-  "description": "react-native actionsSheet for Android and iOS",
+  "version": "1.0.2",
+  "description": "react-native ActionSheet for Android and iOS",
   "main": "example/src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +11,11 @@
     "url": "git+https://github.com/NoPPT/react-native-actionsheet.git"
   },
   "keywords": [
-    "react-native actionsheet"
+    "react-native",
+    "reactnative",
+    "rn",
+    "pickerview",
+    "actionsheet"
   ],
   "author": "zhuang",
   "license": "MIT",

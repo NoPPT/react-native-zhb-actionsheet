@@ -22,6 +22,29 @@ const kDefaultArrayIsEmpyErrorDesc = 'Prop `titles` must be an array and it must
 
 export default class ActionSheet extends Component {
 
+    static propTypes = {
+        /**
+         * array of title like:
+         * [
+         *      {
+         *          title: "titleName", //PropTypes.string.isRequired
+         *          actionStyle: "default", //PropTypes.string.oneOf(["default", "cancel", "destructive"])
+         *          action: () => {}, //PropTypes.func,
+         *          customStyle: {} //View.props.style //todo
+         *      },
+         *      ...
+         * ]
+         */
+        titles: PropTypes.array.isRequired,
+        onClose: PropTypes.func,
+        separateLineHeight: PropTypes.number,
+    };
+
+    static defaultProps = {
+        titles: [],
+        separateLineHeight: 4
+    };
+
     constructor(props) {
         super(props);
         this.state = {
@@ -43,7 +66,6 @@ export default class ActionSheet extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log(JSON.stringify(nextProps));
         if (this.checkArrayStructure(nextProps.titles)) {
             var defaultTitles = [], cancelTitles = [];
             for (var i = 0, length = nextProps.titles.length; i < length; i ++) {
@@ -63,31 +85,6 @@ export default class ActionSheet extends Component {
             });
         }
     }
-
-    static propTypes = {
-        /**
-         * array of title like:
-         * [
-         *      {
-         *          title: "titleName", //PropTypes.string.isRequired
-         *          actionStyle: "default", //PropTypes.string.oneOf(["default", "cancel", "destructive"])
-         *          action: () => {}, //PropTypes.func,
-         *          customStyle: {} //View.props.style
-         *      },
-         *      ...
-         * ]
-         */
-        titles: PropTypes.array.isRequired,
-        onClose: PropTypes.func,
-        onCancel: PropTypes.func,
-        separateLineHeight: PropTypes.number,
-
-    };
-
-    static defaultProps = {
-        titles: [],
-        separateLineHeight: 4
-    };
 
     checkArrayStructure(array) {
         if (Object.prototype.toString.call(array) === '[object Array]') {
@@ -127,7 +124,6 @@ export default class ActionSheet extends Component {
     }
 
     _setContainerLayout(defaultTitles = this.state.defaultTitles, cancelTitles = this.state.cancelTitles, maxHeight = Dimensions.get('window').height) {
-        console.log('PixelRatio:'+PixelRatio.get());
         let cancelHeight = 0;
         if (cancelTitles.length > 0) {
             cancelHeight = (cancelTitles.length - 1) * kDefault1Px + this.state.separateLineHeight;
@@ -204,16 +200,12 @@ export default class ActionSheet extends Component {
                 visible={this.state.visible}
                 onRequestClose={() => {}}
                 animationType="none"
-                onOrientationChange={(obj) => {
-                    console.log('onOrientationChange:'+JSON.stringify(obj.nativeEvent));
-                }}
+                onOrientationChange={(obj) => {}}
                 supportedOrientations={['portrait', 'portrait-upside-down', 'landscape', 'landscape-left', 'landscape-right']}>
             <Animated.View
                 style={[{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)'}, {opacity: this.state.fadeAnim}]}
                 onLayout={(event) => {
-                    console.log(JSON.stringify(event.nativeEvent.layout));
-                    let currentScreenHeight = event.nativeEvent.layout.height;
-                    this._setContainerLayout(this.state.defaultTitles, this.state.cancelTitles, currentScreenHeight);
+                    this._setContainerLayout(this.state.defaultTitles, this.state.cancelTitles, event.nativeEvent.layout.height);
                 }}
             >
                 <TouchableOpacity onPress={() => {this.hide();}}
