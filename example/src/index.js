@@ -185,7 +185,10 @@ export default class ActionSheet extends Component {
         return titlesView;
     }
 
-    _renderCancelTitles(array) {
+    _renderCancelTitles() {
+        if (this.state.cancelTitles.length == 0) {
+            return null;
+        }
         var content = [];
 
         content.push((<View key="separateLine" style={[styles.line, {height: this.state.separateLineHeight}]}/>));
