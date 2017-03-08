@@ -3,8 +3,8 @@
 
 ActionSheet component for React Native (iOS and Android)
 
-![1](./docs/1.jpeg)
-![2](./docs/2.jpeg)
+![1](./docs/1.png)
+![2](./docs/2.png)
 
 ## Installation
 
