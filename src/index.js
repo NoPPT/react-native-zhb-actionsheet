@@ -18,7 +18,7 @@ const kDefaultItemHeight = 44;
 const kDefaultAnimateDuration = 250;
 const kDefault1Px = 1.0 / PixelRatio.get();
 const kDefaultNotArrayTypeErrorDesc = 'Prop `titles` must be an array.';
-const kDefaultArrayIsEmpyErrorDesc = 'Prop `titles` must be an array and it must not be empty.';
+const kDefaultArrayIsEmptyErrorDesc = 'Prop `titles` must be an array and it must not be empty.';
 
 export default class ActionSheet extends Component {
 
@@ -37,12 +37,18 @@ export default class ActionSheet extends Component {
          */
         titles: PropTypes.array.isRequired,
         onClose: PropTypes.func,
-        separateLineHeight: PropTypes.number,
+        separateHeight: PropTypes.number,
+        separateColor: PropTypes.string,
+        backgroundColor: PropTypes.string,
+        containerStyle: View.propTypes.style
     };
 
     static defaultProps = {
         titles: [],
-        separateLineHeight: 4
+        separateHeight: 4,
+        separateColor: '#dddddd',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        containerStyle: {}
     };
 
     constructor(props) {
@@ -51,11 +57,14 @@ export default class ActionSheet extends Component {
             titles: props.titles,
             defaultTitles: [],
             cancelTitles: [],
-            separateLineHeight: props.separateLineHeight,
             visible: false,
             scrollEnable: false,
             fadeAnim: new Animated.Value(0),
             containerHeight: Dimensions.get('window').height,
+            separateHeight: props.separateHeight,
+            separateColor: props.separateColor,
+            backgroundColor: props.backgroundColor,
+            containerStyle: props.containerStyle
         };
 
         this.defaultActionStyles = {
@@ -81,7 +90,10 @@ export default class ActionSheet extends Component {
                 titles: nextProps.titles,
                 defaultTitles: defaultTitles,
                 cancelTitles: cancelTitles,
-                separateLineHeight: nextProps.separateLineHeight
+                separateHeight: nextProps.separateHeight,
+                separateColor: nextProps.separateColor,
+                backgroundColor: nextProps.backgroundColor,
+                containerStyle: nextProps.containerStyle
             });
         }
     }
@@ -89,7 +101,7 @@ export default class ActionSheet extends Component {
     checkArrayStructure(array) {
         if (Object.prototype.toString.call(array) === '[object Array]') {
             if (array.length == 0) {
-                throw Error(kDefaultArrayIsEmpyErrorDesc);
+                throw Error(kDefaultArrayIsEmptyErrorDesc);
             } else {
                 return true;
             }
@@ -102,6 +114,7 @@ export default class ActionSheet extends Component {
         this.setState({
             visible: true
         });
+
         Animated.timing(
             this.state.fadeAnim,
             {toValue: 1, duration: kDefaultAnimateDuration},
@@ -118,7 +131,7 @@ export default class ActionSheet extends Component {
             this.setState({
                 visible: false
             });
-            this.props.onClose != undefined ? this.props.onClose(title) : null;
+            this.props.onClose ? this.props.onClose(title) : null;
             title && title.action ? title.action() : null;
         });
     }
@@ -126,7 +139,7 @@ export default class ActionSheet extends Component {
     _setContainerLayout(defaultTitles = this.state.defaultTitles, cancelTitles = this.state.cancelTitles, maxHeight = Dimensions.get('window').height) {
         let cancelHeight = 0;
         if (cancelTitles.length > 0) {
-            cancelHeight = (cancelTitles.length - 1) * kDefault1Px + this.state.separateLineHeight;
+            cancelHeight = (cancelTitles.length - 1) * kDefault1Px + this.state.separateHeight;
         }
         let height = (defaultTitles.length + cancelTitles.length) * kDefaultItemHeight + (defaultTitles.length - 1) * kDefault1Px + cancelHeight;
         let maxContainerHeight = maxHeight - 2 * kDefaultItemHeight;
@@ -139,6 +152,7 @@ export default class ActionSheet extends Component {
 
     _renderTitlesView(titles) {
         var content = [];
+
         for (var i = 0, length = titles.length; i < length; i ++) {
             let title = titles[i];
             let titleStyle = this.defaultActionStyles[title.actionStyle];
@@ -154,40 +168,36 @@ export default class ActionSheet extends Component {
             );
             if (i != length - 1) {
                 content.push(
-                    <View key={'line'+i} style={styles.line}/>
+                    <View key={'line'+i} style={[styles.line, {backgroundColor: this.state.separateColor}]}/>
                 );
             }
         }
+
         return content;
     }
 
     _renderDefaultTitles() {
         let content = this._renderTitlesView(this.state.defaultTitles);
-        let titlesView = null;
-        if (this.state.scrollEnable) {
-            titlesView = (
-                <ScrollView
-                    scrollEnabled={this.scrollEnable}
-                    showsHorizontalScrollIndicator={false}
-                    showsVerticalScrollIndicator={false}
-                >
-                    {content}
-                </ScrollView>
-            );
-        } else {
-            titlesView = content;
-        }
 
-        return titlesView;
+        return (
+            <ScrollView
+                scrollEnabled={this.state.scrollEnable}
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+            >
+                {content}
+            </ScrollView>
+        );
     }
 
     _renderCancelTitles() {
         if (this.state.cancelTitles.length == 0) {
             return null;
         }
+
         var content = [];
 
-        content.push((<View key="separateLine" style={[styles.line, {height: this.state.separateLineHeight}]}/>));
+        content.push((<View key="separateLine" style={[styles.line, {height: this.state.separateHeight, backgroundColor: this.state.separateColor}]}/>));
         content.push(this._renderTitlesView(this.state.cancelTitles));
 
         return content;
@@ -202,29 +212,31 @@ export default class ActionSheet extends Component {
                 animationType="none"
                 onOrientationChange={(obj) => {}}
                 supportedOrientations={['portrait', 'portrait-upside-down', 'landscape', 'landscape-left', 'landscape-right']}>
-            <Animated.View
-                style={[{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)'}, {opacity: this.state.fadeAnim}]}
-                onLayout={(event) => {
-                    this._setContainerLayout(this.state.defaultTitles, this.state.cancelTitles, event.nativeEvent.layout.height);
-                }}
-            >
-                <TouchableOpacity onPress={() => {this.hide();}}
-                                  activeOpacity={1}
-                                  style={{flex: 1}}>
-                </TouchableOpacity>
-
                 <Animated.View
-                    style={[
-                    {backgroundColor: '#ffffff', height: this.state.containerHeight, margin: 0, borderRadius: 0, overflow: 'hidden'},
-                    {
-                        transform: [{
-                            translateY: this.state.fadeAnim.interpolate({inputRange: [0, 1],outputRange: [this.state.containerHeight, 0]})
-                            }]
-                    }]}>
-                    {this._renderDefaultTitles()}
-                    {this._renderCancelTitles()}
+                    style={[styles.flex1, {opacity: this.state.fadeAnim}, {backgroundColor: this.state.backgroundColor}]}
+                    onLayout={(event) => {
+                        this._setContainerLayout(this.state.defaultTitles, this.state.cancelTitles, event.nativeEvent.layout.height);
+                    }}
+                >
+                    <TouchableOpacity
+                        onPress={() => {this.hide();}}
+                        activeOpacity={1}
+                        style={styles.flex1}>
+                    </TouchableOpacity>
+
+                    <Animated.View
+                        style={[
+                            styles.container,
+                            {borderColor: this.state.separateColor},
+                            this.state.containerStyle,
+                            {height: this.state.containerHeight},
+                            {transform: [{translateY: this.state.fadeAnim.interpolate({inputRange: [0, 1],outputRange: [this.state.containerHeight, 0]})}]}
+                            ]}
+                    >
+                        {this._renderDefaultTitles()}
+                        {this._renderCancelTitles()}
+                    </Animated.View>
                 </Animated.View>
-            </Animated.View>
             </Modal>
         );
     }
@@ -236,6 +248,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    flex1: {
+        flex: 1
+    },
+    container: {
+        backgroundColor: '#ffffff',
+        overflow: 'hidden',
+        margin: 0,
+        borderRadius: 0,
+        borderColor: '#00000000',
+        borderWidth: kDefault1Px
     },
     defaultText: {
         color: '#1C86EE',

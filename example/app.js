@@ -13,15 +13,15 @@ export default class App extends Component {
 
     constructor(props) {
         super(props);
-        this.defaultTitles = [{title: '拍照', action: () => {console.log('111');}},
-            {title: '从相册中选取', actionStyle: 'default', action: () => {console.log('111');}},
-            {title: '删除', actionStyle: 'destructive', action: () => {console.log('111');}},
-            {title: '取消', actionStyle: 'cancel', action: () => {console.log('111');}},
+        this.defaultTitles = [{title: 'Camera', action: () => {console.log('click Camera');}},
+            {title: 'Choose from Album', actionStyle: 'default', action: () => {console.log('click Choose from Album');}},
+            {title: 'Delete', actionStyle: 'destructive', action: () => {console.log('click Delete');}},
+            {title: 'Cancel', actionStyle: 'cancel', action: () => {console.log('click Cancel');}}
             ];
-        this.customTitles = [{title: '标题1'}, {title: '标题2'}, {title: '标题3'}, {title: '标题4'}, {title: '标题5'},
-            {title: '标题6'}, {title: '标题7'}, {title: '标题8'}];
+        this.customTitles = [{title: 'Title 1'}, {title: 'Title 2'}, {title: 'Title 3'}, {title: 'Title 4'}, {title: 'Title 5'},
+            {title: 'Title 6'}, {title: 'Title 7'}, {title: 'Title 8'}];
         this.state = {
-            titles: this.defaultTitles,
+            titles: this.defaultTitles
         };
     }
 
@@ -31,8 +31,11 @@ export default class App extends Component {
                 <ActionSheet
                     ref="picker"
                     titles={this.state.titles}
-                    separateLineHeight={3}
-                    onClose={(obj) => {console.log('action sheet closed!' + JSON.stringify(obj));}}
+                    separateHeight={3}
+                    separateColor="#dddddd"
+                    backgroundColor="rgba(0, 0, 0, 0.3)"
+                    containerStyle={{margin: 10, borderRadius: 5}}
+                    onClose={(obj) => {console.log('action sheet closed! clicked:' + JSON.stringify(obj));}}
                 />
 
                 <Text style={styles.welcome} onPress={() => {this.setState({titles: this.defaultTitles}, () => {this.refs.picker.show();})}}>
@@ -56,6 +59,6 @@ const styles = StyleSheet.create({
     welcome: {
         fontSize: 30,
         textAlign: 'center',
-        margin: 10,
+        margin: 10
     }
 });
