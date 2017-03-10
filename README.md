@@ -1,10 +1,9 @@
 # ActionSheet for React Native
-[![npm Version](https://img.shields.io/npm/v/react-native-zhb-actionsheet.svg)](https://www.npmjs.com/package/react-native-zhb-actionsheet) [![License](https://img.shields.io/npm/l/react-native-zhb-actionsheet.svg)](https://www.npmjs.com/package/react-native-zhb-actionsheet) [![Build Status](https://travis-ci.org/airbnb/react-native-zhb-actionsheet.svg)](https://travis-ci.org/airbnb/react-native-zhb-actionsheet)
+[![npm Version](https://img.shields.io/npm/v/react-native-zhb-actionsheet.svg)](https://www.npmjs.com/package/react-native-zhb-actionsheet) [![License](https://img.shields.io/npm/l/react-native-zhb-actionsheet.svg)](https://www.npmjs.com/package/react-native-zhb-actionsheet)
 
 ActionSheet component for React Native (iOS and Android)
 
 ![1](./docs/1.png)
-![2](./docs/2.png)
 
 ## Installation
 
@@ -23,6 +22,12 @@ $ npm install react-native-zhb-actionsheet --save
 | separateColor | string(color) | '#dddddd' | no | |
 | backgroundColor | string(color) | 'rgba(0, 0, 0, 0.4)' | no | |
 | containerStyle | style | {} | no | |
+
+## Methods
+| method | type | description |
+| ---- | ---- | ---- |
+| show() | function | show the actionsheet |
+| hide() | function | hide the actionsheet |
 
 ## Basic Usage
 
