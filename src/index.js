@@ -30,7 +30,8 @@ export default class ActionSheet extends Component {
          *          title: "titleName", //PropTypes.string.isRequired
          *          actionStyle: "default", //PropTypes.string.oneOf(["default", "cancel", "destructive"])
          *          action: () => {}, //PropTypes.func,
-         *          customStyle: {} //View.props.style //todo
+         *          textStyle: {} //Text.propTypes.style,
+         *          textViewStyle: {} //View.propTypes.style,
          *      },
          *      ...
          * ]
@@ -40,7 +41,11 @@ export default class ActionSheet extends Component {
         separateHeight: PropTypes.number,
         separateColor: PropTypes.string,
         backgroundColor: PropTypes.string,
-        containerStyle: View.propTypes.style
+        containerStyle: View.propTypes.style,
+        defaultTextStyle: Text.propTypes.style,
+        cancelTextStyle: Text.propTypes.style,
+        destructiveTextStyle: Text.propTypes.style,
+        textViewStyle: View.propTypes.style
     };
 
     static defaultProps = {
@@ -64,13 +69,17 @@ export default class ActionSheet extends Component {
             separateHeight: props.separateHeight,
             separateColor: props.separateColor,
             backgroundColor: props.backgroundColor,
-            containerStyle: props.containerStyle
+            containerStyle: props.containerStyle,
+            defaultTextStyle: props.defaultTextStyle,
+            cancelTextStyle: props.cancelTextStyle,
+            destructiveTextStyle: props.destructiveTextStyle,
+            textViewStyle: props.textViewStyle
         };
 
         this.defaultActionStyles = {
-            default: styles.defaultText,
-            cancel: styles.cancelText,
-            destructive: styles.destructiveText
+            default: styles.defaultTextStyle,
+            cancel: styles.cancelTextStyle,
+            destructive: styles.destructiveTextStyle
         };
     }
 
@@ -93,8 +102,24 @@ export default class ActionSheet extends Component {
                 separateHeight: nextProps.separateHeight,
                 separateColor: nextProps.separateColor,
                 backgroundColor: nextProps.backgroundColor,
-                containerStyle: nextProps.containerStyle
+                containerStyle: nextProps.containerStyle,
+                defaultTextStyle: nextProps.defaultTextStyle,
+                cancelTextStyle: nextProps.cancelTextStyle,
+                destructiveTextStyle: nextProps.destructiveTextStyle,
+                textViewStyle: nextProps.textViewStyle
             });
+
+            if (nextProps.defaultTextStyle) {
+                this.defaultActionStyles["default"] = nextProps.defaultTextStyle;
+            }
+
+            if (nextProps.cancelTextStyle) {
+                this.defaultActionStyles["cancel"] = nextProps.cancelTextStyle;
+            }
+
+            if (nextProps.destructiveTextStyle) {
+                this.defaultActionStyles["destructive"] = nextProps.destructiveTextStyle;
+            }
         }
     }
 
@@ -156,14 +181,14 @@ export default class ActionSheet extends Component {
         for (var i = 0, length = titles.length; i < length; i ++) {
             let title = titles[i];
             let titleStyle = this.defaultActionStyles[title.actionStyle];
-
+            console.log("titleStyle:\n" + JSON.stringify(titleStyle));
             content.push(
                 <TouchableOpacity
                     key={'title'+i}
                     onPress={() => {this.hide(title);}}
-                    style={styles.item}
+                    style={[styles.item, this.state.textViewStyle, title.textViewStyle]}
                 >
-                    <Text style={[styles.defaultText, titleStyle]}>{title.title}</Text>
+                    <Text style={[styles.defaultTextStyle, this.state.defaultTextStyle, titleStyle, title.textStyle]}>{title.title}</Text>
                 </TouchableOpacity>
             );
             if (i != length - 1) {
@@ -260,15 +285,15 @@ const styles = StyleSheet.create({
         borderColor: '#00000000',
         borderWidth: kDefault1Px
     },
-    defaultText: {
+    defaultTextStyle: {
         color: '#1C86EE',
         fontSize: 16
     },
-    cancelText: {
+    cancelTextStyle: {
         color: '#666666',
         fontSize: 16
     },
-    destructiveText: {
+    destructiveTextStyle: {
         color: '#ff5e00',
         fontSize: 16
     },

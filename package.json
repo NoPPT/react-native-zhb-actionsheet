@@ -1,6 +1,6 @@
 {
   "name": "react-native-zhb-actionsheet",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "react-native ActionSheet for Android and iOS",
   "main": "src/index.js",
   "files": [
