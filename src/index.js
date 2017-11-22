@@ -1,6 +1,6 @@
 'use strict';
 
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {
     Dimensions,
     TouchableOpacity,
@@ -11,8 +11,10 @@ import {
     Animated,
     Modal,
     PixelRatio,
-    ScrollView
+    ScrollView,
+    ViewPropTypes
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 const kDefaultItemHeight = 44;
 const kDefaultAnimateDuration = 250;
@@ -41,11 +43,11 @@ export default class ActionSheet extends Component {
         separateHeight: PropTypes.number,
         separateColor: PropTypes.string,
         backgroundColor: PropTypes.string,
-        containerStyle: View.propTypes.style,
+        containerStyle: ViewPropTypes.style,
         defaultTextStyle: Text.propTypes.style,
         cancelTextStyle: Text.propTypes.style,
         destructiveTextStyle: Text.propTypes.style,
-        textViewStyle: View.propTypes.style
+        textViewStyle: ViewPropTypes.style
     };
 
     static defaultProps = {
@@ -58,14 +60,23 @@ export default class ActionSheet extends Component {
 
     constructor(props) {
         super(props);
+        var defaultTitles = [], cancelTitles = [];
+        for (var i = 0, length = props.titles.length; i < length; i ++) {
+            let title = props.titles[i];
+            if (title.actionStyle == 'cancel') {
+                cancelTitles.push(title);
+            } else {
+                defaultTitles.push(title);
+            }
+        }
         this.state = {
             titles: props.titles,
-            defaultTitles: [],
-            cancelTitles: [],
+            defaultTitles: defaultTitles,
+            cancelTitles: cancelTitles,
             visible: false,
             scrollEnable: false,
             fadeAnim: new Animated.Value(0),
-            containerHeight: Dimensions.get('window').height,
+            containerHeight: 0,
             separateHeight: props.separateHeight,
             separateColor: props.separateColor,
             backgroundColor: props.backgroundColor,
@@ -149,6 +160,7 @@ export default class ActionSheet extends Component {
     }
 
     hide(title) {
+        
         Animated.timing(
             this.state.fadeAnim,
             {toValue: 0, duration: kDefaultAnimateDuration},
@@ -156,9 +168,12 @@ export default class ActionSheet extends Component {
             this.setState({
                 visible: false
             });
-            this.props.onClose ? this.props.onClose(title) : null;
-            title && title.action ? title.action() : null;
         });
+
+        setTimeout(() => {
+            this.props.onClose && this.props.onClose(title);
+            title && title.action && title.action();
+        }, 500);
     }
 
     _setContainerLayout(defaultTitles = this.state.defaultTitles, cancelTitles = this.state.cancelTitles, maxHeight = Dimensions.get('window').height) {
