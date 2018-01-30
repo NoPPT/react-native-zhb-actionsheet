@@ -196,7 +196,6 @@ export default class ActionSheet extends Component {
         for (var i = 0, length = titles.length; i < length; i ++) {
             let title = titles[i];
             let titleStyle = this.defaultActionStyles[title.actionStyle];
-            console.log("titleStyle:\n" + JSON.stringify(titleStyle));
             content.push(
                 <TouchableOpacity
                     key={'title'+i}
