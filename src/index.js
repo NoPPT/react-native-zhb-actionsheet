@@ -201,8 +201,9 @@ export default class ActionSheet extends Component {
                     key={'title'+i}
                     onPress={() => {this.hide(title);}}
                     style={[styles.item, this.state.textViewStyle, title.textViewStyle]}
+                    accessibilityLabel={title.accessibilityLabel}
                 >
-                    <Text style={[styles.defaultTextStyle, this.state.defaultTextStyle, titleStyle, title.textStyle]}>{title.title}</Text>
+                    <Text accessible={false} style={[styles.defaultTextStyle, this.state.defaultTextStyle, titleStyle, title.textStyle]}>{title.title}</Text>
                 </TouchableOpacity>
             );
             if (i != length - 1) {
